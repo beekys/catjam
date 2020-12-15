@@ -1,6 +1,7 @@
 package fi.utu.tech.ringersClock.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /*
  * Entity class presenting a WakeUpGroup. The class is not complete.
@@ -12,6 +13,7 @@ public class WakeUpGroup implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private Integer ID;
+	private ArrayList<Researcher> researchers;
 
 	public WakeUpGroup(Integer id, String name) {
 		super();
@@ -33,6 +35,10 @@ public class WakeUpGroup implements Serializable {
 
 	public void setID(Integer ID) {
 		this.ID = ID;
+	}
+
+	public void joinResearchers(Researcher r) {
+		researchers.add(r);
 	}
 
 	@Override
