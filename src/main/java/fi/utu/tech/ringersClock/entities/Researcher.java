@@ -1,6 +1,8 @@
 package fi.utu.tech.ringersClock.entities;
 
-public class Researcher {
+import java.io.Serializable;
+
+public class Researcher implements Serializable {
 
     private Integer rID;
     private boolean isLeader;
