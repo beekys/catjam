@@ -14,6 +14,7 @@ public class WakeUpGroup implements Serializable {
 	private String name;
 	private Integer ID;
 	private ArrayList<Researcher> researchers;
+	private String command;
 
 	public WakeUpGroup(Integer id, String name) {
 		super();
@@ -23,6 +24,10 @@ public class WakeUpGroup implements Serializable {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public String getCommand() {
+		return this.command;
 	}
 
 	public Integer getID() {

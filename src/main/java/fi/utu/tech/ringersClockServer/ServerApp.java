@@ -1,5 +1,7 @@
 package fi.utu.tech.ringersClockServer;
 
+import fi.utu.tech.ringersClock.entities.WakeUpGroup;
+
 public class ServerApp {
 
 	private static ServerApp app;
@@ -12,7 +14,7 @@ public class ServerApp {
 
 		wup = new WakeUpService();
 		listener = new ServerSocketListener(serverIP, serverPort, wup);
-
+		wup.setSSL(listener);
 		wup.start();
 		listener.start();
 	}
