@@ -34,7 +34,7 @@ public class MainViewController {
 	@FXML
 	private Label alarmTime;
 	@FXML
-	private CheckBox norain;
+	private CheckBox noRain;
 	@FXML
 	private CheckBox temp;
 	@FXML
@@ -70,6 +70,7 @@ public class MainViewController {
 		statusText.setWrapText(true);
 		alarmPic.setVisible(false);
 
+
 		for (int i = 0; i < 24; i++) {
 			newHour.getItems().add(i);
 		}
@@ -93,11 +94,12 @@ public class MainViewController {
 	public void setAlarmTime(Instant time) {
 		alarmTime.setText(DATE_TIME_FORMATTER.format(time));
 	}
+
 	@FXML
 	public void clearAlarmTime() {
 		alarmTime.setText("--:--");
 	}
-	
+
 	@FXML
 	public void alarm() {
 		alarmPic.setVisible(true);
@@ -126,7 +128,7 @@ public class MainViewController {
 	@FXML
 	private void createButtonPressed(ActionEvent event) {
 		if (!newGroupName.getText().equals("")) {
-			gio.createNewGroup(newGroupName.getText(), newHour.getValue(), newMinute.getValue(), norain.isSelected(),temp.isSelected());
+			gio.createNewGroup(newGroupName.getText(), newHour.getValue(), newMinute.getValue(), noRain.isSelected(), temp.isSelected());
 		} else {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("No group name");
@@ -146,11 +148,16 @@ public class MainViewController {
 			alert.showAndWait();
 		}
 	}
-	
+
 	@FXML
 	private void resignButtonPressed(ActionEvent event) {
-		
-			gio.resignGroup();
-		
+		if (!(existingGroup.getValue() == null)) {
+			gio.resignGroup(existingGroup.getValue());
+		} else {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("No group selected");
+			alert.setHeaderText("Please select a group");
+			alert.showAndWait();
+		}
 	}
 }

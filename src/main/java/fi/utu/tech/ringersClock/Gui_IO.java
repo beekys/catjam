@@ -2,7 +2,7 @@ package fi.utu.tech.ringersClock;
 
 import java.time.Instant;
 import java.util.ArrayList;
-
+import fi.utu.tech.ringersClock.entities.*;
 import fi.utu.tech.ringersClock.UI.MainViewController;
 import fi.utu.tech.ringersClock.entities.WakeUpGroup;
 import javafx.application.Platform;
@@ -28,7 +28,7 @@ public class Gui_IO {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				cont.setAlarmTime(Instant.now());
+				cont.setAlarmTime(time);
 			}
 		});
 	}
@@ -123,51 +123,57 @@ public class Gui_IO {
 	/*
 	 * This method is run if the leader accepts the wake-up Now you have to wake up
 	 * the rest of the team
-	 * 
-	 * IMPLEMENT THIS ONE
 	 */
 	public void AlarmAll(WakeUpGroup group) {
 		System.out.println("AlarmAll " + group.getName());
+		ClockClient.send(new ClientCall<>(ClientCallType.ALARM_ALL));
 	}
 
 	/*
 	 * This method is run if the leader cancel the wake-up The alarm is cancelled
 	 * and should be removed from server
-	 * 
-	 * IMPLEMENT THIS ONE
 	 */
 	public void CancelAlarm(WakeUpGroup group) {
 		System.out.println("CancelAll " + group.getName());
+		ClockClient.send(new ClientCall<>(ClientCallType.CANCEL_ALARM));
 	}
 
 	/*
 	 * This method is run when user pressed the create button Now the group with
 	 * wake-up time must be sent to server
-	 * 
-	 * IMPLEMENT THIS ONE
 	 */
-	public void createNewGroup(String name, Integer hour, Integer minutes, boolean norain, boolean temp) {
-		System.out.println("Create New Group pressed, name: " + name + " Wake-up time: " + hour + ":" + minutes + " Rain allowed: " + norain + " Temperature over 0 deg: " + temp);
+	public void createNewGroup(String name, Integer hour, Integer minute, boolean noRain, boolean tempPlus) {
+		System.out.println("Create New Group pressed, name: " + name + " Wake-up time: " + hour + ":" + minute + " Rain allowed: " + noRain + " Temperature over 0 deg: " + tempPlus);
+		Integer ID = ClockClient.getLocalPort();
+		Alarm alarm = new Alarm(hour, minute, noRain, tempPlus);
+		ClockClient.send(
+				new ClientCall<WakeUpGroup>(
+						ClientCallType.CREATE_WAKE_UP_GROUP, new WakeUpGroup(ID, name, alarm))
+		);
 	}
 
 	/*
 	 * This method is run when user pressed the join button The info must be sent to
 	 * server
-	 * 
-	 * IMPLEMENT THIS ONE
 	 */
 
 	public void joinGroup(WakeUpGroup group) {
 		System.out.println("Join Group pressed" + group.getName());
+		ClockClient.send(
+				new ClientCall<WakeUpGroup>(
+						ClientCallType.JOIN_WAKE_UP_GROUP, group)
+		);
 	}
 	
 	/*
 	 * This method is run when user pressed the resign button The info must be sent to
 	 * server
-	 * 
-	 * IMPLEMENT THIS ONE
 	 */
-	public void resignGroup() {
+	public void resignGroup(WakeUpGroup value) {
 		System.out.println("Resign Group pressed");
+		ClockClient.send(
+				new ClientCall<WakeUpGroup>(
+				ClientCallType.RESIGN_WAKE_UP_GROUP, value)
+		);
 	}
 }

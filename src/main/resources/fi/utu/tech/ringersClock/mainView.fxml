@@ -54,7 +54,7 @@
                         <Font name="Arial" size="14.0" />
                      </font>
                   </Label>
-                  <CheckBox fx:id="norain" mnemonicParsing="false" text="Not raining" textFill="WHITE">
+                  <CheckBox fx:id="noRain" mnemonicParsing="false" text="Not raining" textFill="WHITE">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>

@@ -24,7 +24,6 @@ public class App extends Application {
 	 */
 	private static Scene scene;
 	private static MainViewController controller;
-	private ClockClient cc;
 	private Gui_IO gio;
 	private Clock clock;
 	private Timer tt;
@@ -40,12 +39,10 @@ public class App extends Application {
 		String serverIP = parameters.getNamed().getOrDefault("host", "127.0.0.1");
 		int port = Integer.parseInt(parameters.getNamed().getOrDefault("port", "3000"));
 
-		gio = new Gui_IO(controller);
-		controller.setGui_IO(gio);
-		gio.clearAlarmTime();
-
-		cc = new ClockClient(serverIP, port, gio);
-		cc.start();
+		try {
+			new ClockClient(serverIP, port, gio);
+		} catch (IOException e)
+		{ e.printStackTrace(); }
 	}
 
 	/*
@@ -56,7 +53,6 @@ public class App extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("mainView.fxml"));
 		Parent root = loader.load();
 		controller = loader.getController();
-
 		clock = Clock.systemDefaultZone();
 
 		scene = new Scene(root);

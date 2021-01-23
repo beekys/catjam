@@ -17,8 +17,26 @@ public class WeatherData {
 	 * data in the constructor.
 	 */
 
-	public WeatherData() {
+	private double rainAmount;
+	private double temperature;
 
+	public WeatherData(double rainAmount, double temperature) {
+		this.rainAmount = rainAmount;
+		this.temperature = temperature;
 	}
 
+	/*
+	 * In case of server error
+	 */
+	public WeatherData() {
+	}
+
+
+	public double getTemperature() {
+		return rainAmount;
+	}
+
+	public double getRainAmount() {
+		return temperature;
+	}
 }

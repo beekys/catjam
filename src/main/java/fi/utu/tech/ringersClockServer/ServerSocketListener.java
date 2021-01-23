@@ -1,74 +1,55 @@
 package fi.utu.tech.ringersClockServer;
 
-import fi.utu.tech.ringersClock.entities.WakeUpGroup;
+import fi.utu.tech.ringersClock.entities.ServerCall;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-<<<<<<< HEAD
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Collections;
-=======
-import java.util.concurrent.CopyOnWriteArrayList;
->>>>>>> 74e0ab27bf5f527a57347c38f46d8d056a8a52f7
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServerSocketListener extends Thread {
 
-	private String host;
+	private final String host;
+	private static ServerSocketListener instance;
 	private int port;
-	private WakeUpService wup;
-<<<<<<< HEAD
-	private List<ClientHandler> ch = Collections.synchronizedList(new ArrayList<>());
+	private WakeUpService wus;
+	private ServerSocket serverSocket;
+	private Map<Integer,ClientHandler> clientHandlers = Collections.synchronizedMap(new HashMap<Integer,ClientHandler>());
+	private Thread thread;
 
-=======
-	private CopyOnWriteArrayList<ClientHandler> chList = new CopyOnWriteArrayList<ClientHandler>();
->>>>>>> 74e0ab27bf5f527a57347c38f46d8d056a8a52f7
-
-	public ServerSocketListener(String host, int port, WakeUpService wup) {
+	public ServerSocketListener(String host, int port, WakeUpService wus) {
 		this.host = host;
 		this.port = port;
-		this.wup = wup;
+		this.wus = wus;
 
-	}
-
-	public void send(WakeUpGroup wug) {
-		for(ClientHandler item : chList) {
-			item.send(wug);
-		}
+		ServerSocketListener.instance = this;
+		this.thread = new Thread(this);
+		this.thread.start();
 	}
 
 	public void run() {
 		try {
-<<<<<<< HEAD
-			ServerSocket sk = new ServerSocket(port);
+			this.serverSocket = new ServerSocket(port);
+			System.out.println("Server is online");
+		} catch (IOException e) { e.printStackTrace(); }
+		while (!serverSocket.isClosed()) {
+			try {
+				Socket clientSocket = serverSocket.accept();
+				var ch = new ClientHandler(clientSocket, wus);
+				clientHandlers.put(clientSocket.getLocalPort(), ch);
 
-			while(true) {
-				Socket cs = sk.accept();
-				ClientHandler chTemp = new ClientHandler(cs, wup, this);
-				ch.add(chTemp);
-				chTemp.start();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-=======
-			ServerSocket sc = new ServerSocket(port);
-
-			while (true) {
-				Socket cs = sc.accept();
-				chList.add(new ClientHandler(cs, wup, this));
->>>>>>> 74e0ab27bf5f527a57347c38f46d8d056a8a52f7
-
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
-
-	public void send(WakeUpGroup wug) {
-		for(ClientHandler obj : ch) {
-			obj.send(wug);
+	public static void sendCommandToEveryClient(ServerCall<?> cmd)
+	{
+		for(var entry : instance.clientHandlers.entrySet())
+		{
+			entry.getValue().send(cmd);
 		}
 	}
 
